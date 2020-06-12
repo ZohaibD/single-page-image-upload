@@ -8,9 +8,9 @@ var upload = multer({ dest: 'uploads/' })
 const app = express();
 
 cloudinary.config({ 
-    cloud_name: 'dlpd8r1dd', 
-    api_key: 124315552424568, 
-    api_secret: 'RhDEb6Mv4c0yQTvFS7_h7HLeF28'
+    cloud_name: 'yourcloud name', 
+    api_key: 'api key', 
+    api_secret: 'secret key'
   })
 
 
