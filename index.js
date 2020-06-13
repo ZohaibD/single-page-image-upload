@@ -14,9 +14,7 @@ cloudinary.config({
   api_secret: process.env.API_SECRET
 })
   
-app.use(cors({ 
-  origin: CLIENT_ORIGIN 
-})) 
+app.use(cors()) 
 
 app.use(formData.parse())
 app.use(express.static(path.join(__dirname, "client", "build")))
