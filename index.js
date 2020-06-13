@@ -14,17 +14,18 @@ cloudinary.config({
   api_secret: process.env.API_SECRET
 })
   
-app.use(cors()) 
+app.use(cors({ 
+  origin: CLIENT_ORIGIN 
+})) 
 
 app.use(formData.parse())
 app.use(express.static(path.join(__dirname, "client", "build")))
 
-app.get('/wake-up', (req, res) => res.send('ðŸ‘Œ'))
+app.get('/wake-up', (req, res) => res.send('👌'))
 
 app.post('/image-upload', (req, res) => {
-  console.log(process.env.cloud_name)
+  
   const values = Object.values(req.files)
-  console.log('values are ', values)
   const promises = values.map(image => cloudinary.uploader.upload(image.path))
   
   Promise
