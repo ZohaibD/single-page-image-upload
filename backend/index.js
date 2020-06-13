@@ -1,37 +1,36 @@
-const express = require('express');
-const cors = require('cors')
+require('dotenv').config()
+const express = require('express')
 const cloudinary = require('cloudinary')
-const bodyParser = require ('body-parser')
 const formData = require('express-form-data')
-var multer  = require('multer')
-var upload = multer({ dest: 'uploads/' })
-const app = express();
+const cors = require('cors')
+const { CLIENT_ORIGIN } = require('./config')
+
+const app = express()
 
 cloudinary.config({ 
-    cloud_name: 'yourcloud name', 
-    api_key: 'api key', 
-    api_secret: 'secret key'
-  })
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET
+})
+  
+app.use(cors({ 
+  origin: CLIENT_ORIGIN 
+})) 
 
-
-
-app.use(cors())
 app.use(formData.parse())
 
-app.post('/image-upload',upload.single('image'),(req,res)=>{
-    const values = Object.values(req.files)
-        
-    console.log('Image ' , values[0].originalFilename)
-    
-    const promises = values.map(image => cloudinary.uploader.upload(image.path))
+app.get('/wake-up', (req, res) => res.send('ðŸ‘Œ'))
+
+app.post('/image-upload', (req, res) => {
+  console.log(process.env.cloud_name)
+  const values = Object.values(req.files)
+  console.log('values are ', values)
+  const promises = values.map(image => cloudinary.uploader.upload(image.path))
   
-    Promise
-      .all(promises)
-      .then(results => res.send(results))
+  Promise
+    .all(promises)
+    .then(results => res.json(results))
+    .catch((err) => res.status(400).json(err))
 })
 
-
-
-app.listen(4444,()=>{
-    console.log('App is listening on ',4444)
-})
+app.listen(process.env.PORT || 8080, () => console.log('server is running on port' , process.env.PORT))
