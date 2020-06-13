@@ -4,6 +4,7 @@ const cloudinary = require('cloudinary')
 const formData = require('express-form-data')
 const cors = require('cors')
 const { CLIENT_ORIGIN } = require('./config')
+const path = require("path")
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use(cors({
 })) 
 
 app.use(formData.parse())
+app.use(express.static(path.join(__dirname, "client", "build")))
 
 app.get('/wake-up', (req, res) => res.send('ðŸ‘Œ'))
 
@@ -32,5 +34,8 @@ app.post('/image-upload', (req, res) => {
     .then(results => res.json(results))
     .catch((err) => res.status(400).json(err))
 })
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 app.listen(process.env.PORT || 8080, () => console.log('server is running on port' , process.env.PORT))
